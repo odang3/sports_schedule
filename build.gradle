@@ -29,7 +29,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.batch:spring-batch-test'
 
-    implementation 'org.jsoup:jsoup:1.15.3'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.5.3'
 }
 
 tasks.named('test') {
