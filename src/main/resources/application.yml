@@ -1,0 +1,7 @@
+server:
+  # todo server - port
+  port: 10002
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    min-response-size: 1024

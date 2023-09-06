@@ -3,17 +3,20 @@ package com.teo.sports.crawling;
 import static java.lang.System.*;
 
 import java.util.List;
+import java.util.Map;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 
 
 public class Sport {
 
     private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-    private static final String WEB_DRIVER_PATH = "C:\\Users\\showm\\Downloads\\chromedriver.exe";
+    private static final String WEB_DRIVER_PATH = "C:\\Users\\showm\\Downloads\\chrome-win64\\chromedriver.exe";
 
     public static void main(String[] args) {
 
@@ -38,18 +41,31 @@ public class Sport {
         WebDriver driver = new ChromeDriver(options);
 
         //이동을 원하는 url
-        String url = "https://sports.news.naver.com/wfootball/schedule/index?year=2022&month=11&category=epl";
+        String url = "https://sports.news.naver.com/wfootball/schedule/index";
 
         //WebDriver을 해당 url로 이동한다.
         driver.get(url);
 
         //브라우저 이동시 생기는 로드시간을 기다린다.
         //HTTP응답속도보다 자바의 컴파일 속도가 더 빠르기 때문에 임의적으로 1초를 대기한다.
-        try {Thread.sleep(1000);} catch (InterruptedException e) {}
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
 
         //class="division" 인 모든 태그를 가진 WebElement리스트를 받아온다.
         //WebElement는 html의 태그를 가지는 클래스이다.
-        List<WebElement> el1 = driver.findElements(By.className("before_game"));
+        WebElement scriptElement = driver.findElement(By.cssSelector("script[type='text/javascript']"));
+        String scriptContent = scriptElement.getAttribute("innerHTML");
+        // JSON 파싱
+        JsonParser jsonParser = JsonParserFactory.getJsonParser();
+        Map<String, Object> jsonMap = jsonParser.parseMap(scriptContent);
+
+        // scheduleData 값을 추출
+        Map<String, Object> scheduleData = (Map<String, Object>) jsonMap.get("scheduleData");
+        System.out.println(scheduleData);
+
 
 //        for (int i = 0; i < el1.size(); i++) {
 //            //division 클래스의 객체 중 "뉴스"라는 텍스트를 가진 WebElement를 클릭한다.
@@ -72,11 +88,6 @@ public class Sport {
 //        List<WebElement> el3 = el2.findElements(By.tagName("strong"));
 //
 //        int count = 0;
-        for (int i = 0; i < el1.size(); i++) {
-            //뉴스의 제목을 모두 출력한다.
-//            System.out.println(++count + "번 뉴스: "+ el3.get(i).getText());
-            System.out.println("내용: "+ el1.get(i).getText());
-        }
 
 
         try {
